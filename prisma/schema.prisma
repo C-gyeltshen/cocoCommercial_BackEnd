@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id            Int         @id @default(autoincrement())
+  productName   String
+  description   String
+  stockQuantity Int
+  productPrice  Float
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  storeId       Int
+  store         Store       @relation(fields: [storeId], references: [id])
+  OrderItem     OrderItem[]
+}
+
+model Store {
+  id               Int             @id @default(autoincrement())
+  storeName        String          
+  storeDescription String
+  storeDzongkhag        String
+  storeGewog            String
+  storeVillage          String
+  merchantId       Int
+  merchant         Merchant        @relation(fields: [merchantId], references: [id])
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  products         Product[]
+  customerOrders   CustomerOrder[]
+}
+
+model Merchant {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  dzongkhag String
+  gewog     String
+  village   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  stores    Store[]
+}
+
+model Customer {
+  id          Int             @id @default(autoincrement())
+  name        String
+  email       String          @unique
+  phoneNumber String
+  dzongkhag   String
+  gewog       String
+  village     String
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  orders      CustomerOrder[]
+}
+
+model CustomerOrder {
+  id                 Int         @id @default(autoincrement())
+  customerId         Int
+  customer           Customer    @relation(fields: [customerId], references: [id])
+  storeId            Int
+  store              Store       @relation(fields: [storeId], references: [id])
+  orderDate          DateTime    @default(now())
+  fulfillmentDate    DateTime
+  totalAmount        Float
+  orderStatus        Boolean
+  addressDescription String
+  dzongkhag          String
+  gewog              String
+  village            String
+  latitude           String
+  longitude          String
+  phoneNumber        String
+  orderItems         OrderItem[]
+  Payment            Payment[]
+}
+
+model OrderItem {
+  id        Int           @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int
+  createdAt DateTime      @default(now())
+  order     CustomerOrder @relation(fields: [orderId], references: [id])
+  product   Product       @relation(fields: [productId], references: [id])
+}
+
+model Payment {
+  id            Int           @id @default(autoincrement())
+  orderId       Int
+  order         CustomerOrder @relation(fields: [orderId], references: [id])
+  journalNumber String
+  amount        Float
+  paymentStatus Boolean
+  createdAt     DateTime      @default(now())
+}
