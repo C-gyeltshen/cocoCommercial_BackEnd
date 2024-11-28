@@ -282,7 +282,7 @@ app.patch('/update/customers/:id', async (c)=>{
   }
 })
 
-// =================================================
+
 // Create a new order to a specific store
 app.post('/create/orders/stores/:store_id/customer/:customer_id/orders', async (c) => {
   try {
