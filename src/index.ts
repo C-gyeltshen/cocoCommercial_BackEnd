@@ -1,6 +1,6 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
-import { PrismaClient, type OrderItem } from '@prisma/client'
+import { PrismaClient, OrderStatus, type OrderItem } from '@prisma/client'
 const prisma = new PrismaClient()
 
 const app = new Hono()
@@ -330,7 +330,7 @@ app.post('/create/orders/stores/:store_id/customer/:customer_id/orders', async (
         orderDate: new Date(),
         fulfillmentDate: new Date(body.fulfillmentDate),
         totalAmount: body.totalAmount,
-        orderStatus: false,
+        orderStatus: "ORDER_PLACED",
         addressDescription: body.addressDescription,
         dzongkhag: body.dzongkhag,
         gewog: body.gewog,
@@ -443,7 +443,7 @@ app.post('/create/order/store/:id/orders', async (c)=>{
         orderDate: new Date(),
         fulfillmentDate: new Date(body.fulfillmentDate),
         totalAmount: body.totalAmount,
-        orderStatus: false, 
+        orderStatus: "ORDER_CONFIRMED", 
         addressDescription: body.addressDescription,
         dzongkhag: body.dzongkhag,
         gewog: body.gewog,
@@ -456,7 +456,8 @@ app.post('/create/order/store/:id/orders', async (c)=>{
             ...body.orderItems.map((orderItem:any)=>{
               return {
                 "quantity":orderItem.quantity,
-                "productId":orderItem.productId
+                "productId":orderItem.productId,
+                "unitPrice":orderItem.unitPrice,
               }
             })
           ]
@@ -488,34 +489,34 @@ app.post('/create/order/store/:id/orders', async (c)=>{
 })
 
 
-// Update the order status of a particular product
-app.patch('/update/orders/:order_id', async (c)=>{
-  try{
-    const order_id = parseInt(c.req.param("order_id"))
-    // check whether order exist or not
-    const existingOrder = await prisma.customerOrder.findUnique({
-      where: { id: order_id },
-    });
-    if (!existingOrder) {
-      return c.json({ message: "Order not found" }, 404);
-    }
-    if (isNaN(order_id)) {
-      return c.json({ message: "Invalid order ID" }, 400); 
-    }
-    const update_order = await prisma.customerOrder.update({
-      where:{
-        id:order_id,
-      },
-      data:{
-        orderStatus:true
-      }
-    })
-    return c.json({ message: "Order status updated successfully", order: update_order });
-  } catch (error) {
-    console.error("Error updating order:", error); // Log the error for debugging
-    return c.json({ message: "Internal server error" }, 500);
-  }
-})
+// // Update the order status of a particular product
+// app.patch('/update/orders/:order_id', async (c)=>{
+//   try{
+//     const order_id = parseInt(c.req.param("order_id"))
+//     // check whether order exist or not
+//     const existingOrder = await prisma.customerOrder.findUnique({
+//       where: { id: order_id },
+//     });
+//     if (!existingOrder) {
+//       return c.json({ message: "Order not found" }, 404);
+//     }
+//     if (isNaN(order_id)) {
+//       return c.json({ message: "Invalid order ID" }, 400); 
+//     }
+//     const update_order = await prisma.customerOrder.update({
+//       where:{
+//         id:order_id,
+//       },
+//       data:{
+//         orderStatus:true
+//       }
+//     })
+//     return c.json({ message: "Order status updated successfully", order: update_order });
+//   } catch (error) {
+//     console.error("Error updating order:", error); // Log the error for debugging
+//     return c.json({ message: "Internal server error" }, 500);
+//   }
+// })
 
 
 // Retrieve all the orders made by a customer

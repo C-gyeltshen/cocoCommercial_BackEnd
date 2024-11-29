@@ -22,11 +22,11 @@ model Product {
 
 model Store {
   id               Int             @id @default(autoincrement())
-  storeName        String          
+  storeName        String
   storeDescription String
-  storeDzongkhag        String
-  storeGewog            String
-  storeVillage          String
+  storeDzongkhag   String
+  storeGewog       String
+  storeVillage     String
   merchantId       Int
   merchant         Merchant        @relation(fields: [merchantId], references: [id])
   createdAt        DateTime        @default(now())
@@ -70,13 +70,13 @@ model CustomerOrder {
   orderDate          DateTime    @default(now())
   fulfillmentDate    DateTime
   totalAmount        Float
-  orderStatus        Boolean
+  orderStatus        OrderStatus
   addressDescription String
   dzongkhag          String
   gewog              String
   village            String
-  latitude           String
-  longitude          String
+  latitude           Float
+  longitude          Float
   phoneNumber        String
   orderItems         OrderItem[]
   Payment            Payment[]
@@ -87,6 +87,7 @@ model OrderItem {
   orderId   Int
   productId Int
   quantity  Int
+  unitPrice Int
   createdAt DateTime      @default(now())
   order     CustomerOrder @relation(fields: [orderId], references: [id])
   product   Product       @relation(fields: [productId], references: [id])
@@ -101,3 +102,16 @@ model Payment {
   paymentStatus Boolean
   createdAt     DateTime      @default(now())
 }
+
+enum OrderStatus {
+  ORDER_PLACED
+  ORDER_CONFIRMED
+  ORDER_PROCESSING
+  DISPATCHED
+  IN_TRANSIT
+  DELIVERED
+  CANCELED
+  RETURNED
+  REFUND
+}
+
