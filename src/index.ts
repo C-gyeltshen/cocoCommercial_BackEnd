@@ -1,6 +1,6 @@
-import { serve } from '@hono/node-server'
-import { Hono } from 'hono'
-import { PrismaClient, OrderStatus, type OrderItem } from '@prisma/client'
+import { serve } from '@hono/node-server';
+import { Hono } from 'hono';
+import { PrismaClient, OrderStatus } from '@prisma/client';
 const prisma = new PrismaClient()
 
 const app = new Hono()
@@ -163,7 +163,6 @@ app.get('/get/customer/:id', async (c)=>{
       select:{
         name:true,
         email:true,
-        phoneNumber:true,
         dzongkhag:true,
         gewog:true,
         village:true,
@@ -222,7 +221,7 @@ app.get('/get/stores', async (c)=>{
 })
 
 
-//Create customer
+//Create customer 
 app.post('/create/customer', async (c)=>{
   try{
     const body =  await c.req.json()
@@ -256,6 +255,41 @@ app.post('/create/customer', async (c)=>{
 })
 
 
+// Get customer profile details
+app.get('/get/customer/:id', async (c) => {
+  try {
+    const customer_id = parseInt(c.req.param("id"));
+    
+    if (isNaN(customer_id)) {
+      return c.json({ message: "Invalid customer ID provided" }, 400);
+    }
+
+    const customerData = await prisma.customer.findUnique({
+      where: {
+        id: customer_id,
+      },
+      select: {
+        name: true,
+        email: true,
+        phoneNumber: true,
+        dzongkhag: true,
+        gewog: true,
+        village: true,
+      },
+    });
+
+    if (!customerData) {
+      return c.json({ message: `Customer does not exist with the given customer ID: ${customer_id}` }, 404);
+    }
+
+    return c.json({ message: "Customer data retrieved successfully", data: customerData }, 200);
+  } catch (error) {
+    console.error("Error fetching customer data:", error);
+    return c.json({ message: "Internal server error" }, 500);
+  }
+});
+
+
 // Update the customer profile details
 app.patch('/update/customers/:id', async (c)=>{
   try{
@@ -287,8 +321,8 @@ app.patch('/update/customers/:id', async (c)=>{
 app.post('/create/orders/stores/:store_id/customer/:customer_id/orders', async (c) => {
   try {
     const body = await c.req.json();
-    const store_id = parseInt(c.req.param("store_id"));
-    const customer_id = parseInt(c.req.param("customer_id"));
+    const store_id = parseInt(c.req.param('store_id'));
+    const customer_id = parseInt(c.req.param('customer_id'));
 
     // Validate store
     const store_name = await prisma.store.findUnique({
@@ -296,12 +330,12 @@ app.post('/create/orders/stores/:store_id/customer/:customer_id/orders', async (
       select: { storeName: true },
     });
     if (!store_name) {
-      return c.json({ error: "Store not found" }, 404);
+      return c.json({ error: 'Store not found' }, 404);
     }
 
     // Validate order items
     if (!Array.isArray(body.orderItems) || body.orderItems.length === 0) {
-      return c.json({ error: "Order must include at least one item" }, 400);
+      return c.json({ error: 'Order must include at least one item' }, 400);
     }
 
     // Validate stock for each item
@@ -311,7 +345,10 @@ app.post('/create/orders/stores/:store_id/customer/:customer_id/orders', async (
       });
 
       if (!product) {
-        return c.json({ error: `Product with ID ${orderItem.productId} not found` }, 404);
+        return c.json(
+          { error: `Product with ID ${orderItem.productId} not found` },
+          404
+        );
       }
 
       if (product.stockQuantity < orderItem.quantity) {
@@ -330,7 +367,7 @@ app.post('/create/orders/stores/:store_id/customer/:customer_id/orders', async (
         orderDate: new Date(),
         fulfillmentDate: new Date(body.fulfillmentDate),
         totalAmount: body.totalAmount,
-        orderStatus: "ORDER_PLACED",
+        orderStatus: OrderStatus.AWAITING_PAYMENT, 
         addressDescription: body.addressDescription,
         dzongkhag: body.dzongkhag,
         gewog: body.gewog,
@@ -342,19 +379,20 @@ app.post('/create/orders/stores/:store_id/customer/:customer_id/orders', async (
           create: body.orderItems.map((orderItem: any) => ({
             quantity: orderItem.quantity,
             productId: orderItem.productId,
+            unitPrice: orderItem.unitPrice,
           })),
         },
       },
       include: { orderItems: true },
     });
 
-    // decrement the stockQuantity when an order is made
+    // Decrement the stockQuantity when an order is made
     for (const orderItem of body.orderItems) {
       await prisma.product.update({
         where: { id: orderItem.productId },
         data: {
           stockQuantity: {
-            decrement: orderItem.quantity, 
+            decrement: orderItem.quantity,
           },
         },
       });
@@ -367,11 +405,10 @@ app.post('/create/orders/stores/:store_id/customer/:customer_id/orders', async (
     });
   } catch (error) {
     const err = error as Error;
-    console.error("Error creating order:", err.message);
-    return c.json({ error: "An error occurred", details: err.message }, 500);
+    console.error('Error creating order:', err.message);
+    return c.json({ error: 'An error occurred', details: err.message }, 500);
   }
 });
-
 
 
 // Retrive all the order made to a particular store
