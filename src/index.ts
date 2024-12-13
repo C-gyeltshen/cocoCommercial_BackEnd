@@ -1,12 +1,13 @@
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
+import { Prisma } from '@prisma/client';
 import { PrismaClient, OrderStatus } from '@prisma/client';
 const prisma = new PrismaClient()
 
 const app = new Hono()
 
 app.get('/', (c) => {
-  return c.text('Hello its chimiq')
+  return c.text('Hello its cocoCommercial')
 })
 
 
@@ -411,6 +412,210 @@ app.post('/create/orders/stores/:store_id/customer/:customer_id/orders', async (
 });
 
 
+// Update order status form AWAITING_PAYMENT to ORDER_CONFIRMED for a specific order
+app.patch('/update/orderStatus/awaitingPayment/customerOrders/:order_ID', async (c) => {
+  try {
+    // Parse and validate the order_ID parameter
+    const orderID = parseInt(c.req.param("order_ID"), 10);
+    if (isNaN(orderID)) {
+      return c.json({ error: "Invalid order ID, must be a number" }, 400);
+    }
+
+    // Attempt to update the order status
+    const updatedOrder = await prisma.customerOrder.update({
+      where: { id: orderID },
+      data: {
+        orderStatus: OrderStatus.ORDER_CONFIRMED 
+      },
+    });
+    // Return success response
+    return c.json({
+      message: "Order status updated successfully",
+      order: updatedOrder,
+    });
+  } catch (error) {
+    const err = error as Error;
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2025") {
+        // Record not found
+        return c.json({ error: "Order not found" }, 404);
+      }
+    }
+    
+    return c.json(
+      {
+        error: "An unexpected error occurred",
+        details: err.message,
+      },
+      500
+    );
+  }
+});
+
+
+// Update orderStatus from ORDER_CONFIRMED to ORDER_PROCESSING
+app.patch('/update/orderStatus/orderConfirmed/customerOrders/:order_ID', async (c)=>{
+  try{
+     // Parse and validate the order_ID parameter
+      const orderID = parseInt(c.req.param("order_ID"), 10);
+      if (isNaN(orderID)) {
+        return c.json({ error: "Invalid order ID, must be a number" }, 400);
+      }
+  
+      // Attempt to update the order status
+      const updatedOrder = await prisma.customerOrder.update({
+        where: { id: orderID },
+        data: {
+          orderStatus: OrderStatus.ORDER_CONFIRMED 
+        },
+      });
+      // Return success response
+      return c.json({
+        message: "Order status updated successfully",
+        order: updatedOrder,
+      });
+  }catch(error){
+    const err = error as Error;
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2025") {
+        // Record not found
+        return c.json({ error: "Order not found" }, 404);
+      }
+    }
+    
+    return c.json(
+      {
+        error: "An unexpected error occurred",
+        details: err.message,
+      },
+      500
+    );
+  }
+})
+
+
+// Update orderStatus from ORDER_PROCESSING to IN_TRANSIT
+app.patch('/update/orderStatus/inTransit/customerOrders/:order_ID', async (c)=>{
+  try{
+     // Parse and validate the order_ID parameter
+      const orderID = parseInt(c.req.param("order_ID"), 10);
+      if (isNaN(orderID)) {
+        return c.json({ error: "Invalid order ID, must be a number" }, 400);
+      }
+  
+      // Attempt to update the order status
+      const updatedOrder = await prisma.customerOrder.update({
+        where: { id: orderID },
+        data: {
+          orderStatus: OrderStatus.IN_TRANSIT
+        },
+      });
+      // Return success response
+      return c.json({
+        message: "Order status updated successfully",
+        order: updatedOrder,
+      });
+  }catch(error){
+    const err = error as Error;
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2025") {
+        // Record not found
+        return c.json({ error: "Order not found" }, 404);
+      }
+    }
+    
+    return c.json(
+      {
+        error: "An unexpected error occurred",
+        details: err.message,
+      },
+      500
+    );
+  }
+})
+
+
+// Update orderStatus from IN_TRANSIT to DELEVERED
+app.patch('/update/orderStatus/delevered/customerOrders/:order_ID', async (c)=>{
+  try{
+     // Parse and validate the order_ID parameter
+      const orderID = parseInt(c.req.param("order_ID"), 10);
+      if (isNaN(orderID)) {
+        return c.json({ error: "Invalid order ID, must be a number" }, 400);
+      }
+  
+      // Attempt to update the order status
+      const updatedOrder = await prisma.customerOrder.update({
+        where: { id: orderID },
+        data: {
+          orderStatus: OrderStatus.DELIVERED
+        },
+      });
+      // Return success response
+      return c.json({
+        message: "Order status updated successfully",
+        order: updatedOrder,
+      });
+  }catch(error){
+    const err = error as Error;
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2025") {
+        // Record not found
+        return c.json({ error: "Order not found" }, 404);
+      }
+    }
+    
+    return c.json(
+      {
+        error: "An unexpected error occurred",
+        details: err.message,
+      },
+      500
+    );
+  }
+})
+
+
+// Update orderStatus from IN_TRANSIT to DELEVERED
+app.patch('/update/orderStatus/canceled/customerOrders/:order_ID', async (c)=>{
+  try{
+     // Parse and validate the order_ID parameter
+      const orderID = parseInt(c.req.param("order_ID"), 10);
+      if (isNaN(orderID)) {
+        return c.json({ error: "Invalid order ID, must be a number" }, 400);
+      }
+  
+      // Attempt to update the order status
+      const updatedOrder = await prisma.customerOrder.update({
+        where: { id: orderID },
+        data: {
+          orderStatus: OrderStatus.CANCELED
+        },
+      });
+      // Return success response
+      return c.json({
+        message: "Order status updated successfully",
+        order: updatedOrder,
+      });
+  }catch(error){
+    const err = error as Error;
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2025") {
+        // Record not found
+        return c.json({ error: "Order not found" }, 404);
+      }
+    }
+    
+    return c.json(
+      {
+        error: "An unexpected error occurred",
+        details: err.message,
+      },
+      500
+    );
+  }
+})
+
 // Retrive all the order made to a particular store
 app.get('/get/stores/:id/orders', async (c) => {
   try {
@@ -473,9 +678,23 @@ app.post('/create/order/store/:id/orders', async (c)=>{
     if (!Array.isArray(body.orderItems) || body.orderItems.length === 0) {
       return c.json({ error: "Order must include at least one item" }, 400);
     }
+
+    const customer_ID = await prisma.customer.findUnique({
+      where: {
+        email:  body.email
+      },
+      select: {
+        id : true
+      }
+    })
+    console.log("Customer id is :",customer_ID)
+    if (!customer_ID) {
+      return c.json({ error: "Customer not found" }, 404);
+    }
+
     const createOrders = await prisma.customerOrder.create({
       data: {
-        customerId: store_id,
+        customerId: customer_ID.id,
         storeId: store_id,
         orderDate: new Date(),
         fulfillmentDate: new Date(body.fulfillmentDate),
@@ -488,7 +707,7 @@ app.post('/create/order/store/:id/orders', async (c)=>{
         latitude: body.latitude,
         longitude: body.longitude,
         phoneNumber: body.phoneNumber,
-        orderItems: {
+        orderItems: {                
           create: [
             ...body.orderItems.map((orderItem:any)=>{
               return {
@@ -524,36 +743,6 @@ app.post('/create/order/store/:id/orders', async (c)=>{
     return c.json({ error: "An error occurred", details: err.message }, 500);
   }
 })
-
-
-// // Update the order status of a particular product
-// app.patch('/update/orders/:order_id', async (c)=>{
-//   try{
-//     const order_id = parseInt(c.req.param("order_id"))
-//     // check whether order exist or not
-//     const existingOrder = await prisma.customerOrder.findUnique({
-//       where: { id: order_id },
-//     });
-//     if (!existingOrder) {
-//       return c.json({ message: "Order not found" }, 404);
-//     }
-//     if (isNaN(order_id)) {
-//       return c.json({ message: "Invalid order ID" }, 400); 
-//     }
-//     const update_order = await prisma.customerOrder.update({
-//       where:{
-//         id:order_id,
-//       },
-//       data:{
-//         orderStatus:true
-//       }
-//     })
-//     return c.json({ message: "Order status updated successfully", order: update_order });
-//   } catch (error) {
-//     console.error("Error updating order:", error); // Log the error for debugging
-//     return c.json({ message: "Internal server error" }, 500);
-//   }
-// })
 
 
 // Retrieve all the orders made by a customer
