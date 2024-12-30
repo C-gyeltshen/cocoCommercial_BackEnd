@@ -2,6 +2,7 @@ import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 import { Prisma } from '@prisma/client';
 import { PrismaClient, OrderStatus } from '@prisma/client';
+import { supabase } from './supabaseClient.js';
 
 const prisma = new PrismaClient()
 
@@ -12,6 +13,7 @@ import customers from './customers.js'
 import orders from './orders.js'
 import orderStatus from './orderStatus.js'
 import orderDashbord from './orderDashbord.js'
+import auth from './auth.js'
 
 const app = new Hono()
 
@@ -22,6 +24,7 @@ app.route('/customers',customers)
 app.route('/orders',orders)
 app.route('/orderStatus',orderStatus)
 app.route('/orderDashbord', orderDashbord)
+app.route('/auth', auth)
 
 app.get('/', (c) => {
   return c.text('Hello its cocoCommercial')
