@@ -11,10 +11,10 @@ app.get('/auth', (c) => {
 
 app.post('/signup', async (c) => {
     const { email, password } = await c.req.json();
+
+    const { data, error } = await supabase.auth.signUp({ email, password });
     
-        const { data, error } = await supabase.auth.signUp({ email, password });
-    
-        if (error) return c.json({ error: error.message }, 400);
+    if (error) return c.json({ error: error.message }, 400);
         return c.json({ message: 'Signup successful', data });
     });
 
@@ -33,7 +33,5 @@ app.post('/logout', async (c)=>{
     if (error) return c.json({ error: error.message }, 400);
     return c.json({ message: 'Logged out successfully' });
 })
-
-
 
 export default app;
