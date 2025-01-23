@@ -33,18 +33,19 @@ app.post('/create/merchants/stores', async (c) => {
             password: body.password,
             dzongkhag: body.dzongkhag,
             gewog: body.gewog,
-            village: body.village
+            image: body.image
             }
         });
         // Creating a new store associated with the merchant
         const stores = await prisma.store.create({
             data:{
-            storeName: body.storeName,
-            storeDescription:body.storeDescription,
-            storeDzongkhag:body.storeDzongkhag,
-            storeGewog:body.storeGewog,
-            storeVillage:body.storeVillage,
-            merchantId:result.id
+                storeName: body.storeName,
+                storeDescription:body.storeDescription,
+                storeDzongkhag:body.storeDzongkhag,
+                storeGewog:body.storeGewog,
+                storeVillage:body.storeVillage,
+                merchantId:result.id, 
+                image: body.image
             }
         })
         console.log(` A new merchnat ${body.name} is been created with store_id ${stores.id} and merchant_id ${result.id}`)
@@ -73,23 +74,24 @@ app.post('/create/merchants/stores', async (c) => {
         // Create the new merchant
         const result = await prisma.merchant.create({
             data: {
-            name: body.name,
-            email: body.email,
-            password: body.password,
-            dzongkhag: body.dzongkhag,
-            gewog: body.gewog,
-            village: body.village
+                name: body.name,
+                email: body.email,
+                password: body.password,
+                dzongkhag: body.dzongkhag,
+                gewog: body.gewog,
+                image: body.image
             }
         });
         // Creating a new store associated with the merchant
         const stores = await prisma.store.create({
             data:{
-            storeName: body.storeName,
-            storeDescription:body.storeDescription,
-            storeDzongkhag:body.storeDzongkhag,
-            storeGewog:body.storeGewog,
-            storeVillage:body.storeVillage,
-            merchantId:result.id
+                storeName: body.storeName,
+                storeDescription:body.storeDescription,
+                storeDzongkhag:body.storeDzongkhag,
+                storeGewog:body.storeGewog,
+                storeVillage:body.storeVillage,
+                merchantId:result.id, 
+                image: body.image
             }
         })
         console.log(` A new merchnat ${body.name} is been created with store_id ${stores.id} and merchant_id ${result.id}`)

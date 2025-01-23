@@ -53,6 +53,7 @@ app.post('/stores/:id/products', async (c) => {
         const product = await prisma.product.create({
             data: {
                 productName: body.productName,
+                image: body.image,
                 description: body.description,
                 stockQuantity: body.stockQuantity,
                 productPrice: body.productPrice,

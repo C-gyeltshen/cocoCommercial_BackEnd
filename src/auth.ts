@@ -21,6 +21,7 @@ app.post('/signup', async (c) => {
 
 app.post('/login', async (c) => {
     const { email, password } = await c.req.json();
+
     if (!email || !password) return c.json({ error: 'Email and password are required' }, 400);
 
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
@@ -31,6 +32,7 @@ app.post('/login', async (c) => {
 
 app.post('/logout', async (c) => {
     const { error } = await supabase.auth.signOut();
+    
     if (error) return c.json({ error: error.message }, 400);
 
     return c.json({ message: 'Logged out successfully' });

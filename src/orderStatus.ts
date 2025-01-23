@@ -61,7 +61,7 @@ app.patch('/update/orderStatus/orderConfirmed/customerOrders/:order_ID', async (
         if (isNaN(orderID)) {
             return c.json({ error: "Invalid order ID, must be a number" }, 400);
             }
-        
+            
             // Attempt to update the order status
             const updatedOrder = await prisma.customerOrder.update({
             where: { id: orderID },

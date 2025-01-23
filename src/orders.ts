@@ -65,6 +65,7 @@ app.post('/create/orders/stores/:store_id/customer/:customer_id/orders', async (
                 addressDescription: body.addressDescription,
                 dzongkhag: body.dzongkhag,
                 gewog: body.gewog,
+                image: body.image,
                 village: body.village,
                 latitude: body.latitude,
                 longitude: body.longitude,
@@ -183,34 +184,35 @@ app.post('/create/order/store/:id/orders', async (c)=>{
     
         const createOrders = await prisma.customerOrder.create({
             data: {
-            customerId: customer_ID.id,
-            storeId: store_id,
-            orderDate: new Date(),
-            fulfillmentDate: new Date(body.fulfillmentDate),
-            totalAmount: body.totalAmount,
-            orderStatus: "ORDER_CONFIRMED", 
-            addressDescription: body.addressDescription,
-            dzongkhag: body.dzongkhag,
-            gewog: body.gewog,
-            village: body.village,
-            latitude: body.latitude,
-            longitude: body.longitude,
-            phoneNumber: body.phoneNumber,
-            orderItems: {                
-                create: [
-                ...body.orderItems.map((orderItem:any)=>{
-                    return {
-                    "quantity":orderItem.quantity,
-                    "productId":orderItem.productId,
-                    "unitPrice":orderItem.unitPrice,
-                    }
-                })
-                ]
-            }
-            },
-            include: {
-            orderItems: true, 
-            },
+                customerId: customer_ID.id,
+                storeId: store_id,
+                orderDate: new Date(),
+                fulfillmentDate: new Date(body.fulfillmentDate),
+                totalAmount: body.totalAmount,
+                image: body.image,
+                orderStatus: "ORDER_CONFIRMED", 
+                addressDescription: body.addressDescription,
+                dzongkhag: body.dzongkhag,
+                gewog: body.gewog,
+                village: body.village,
+                latitude: body.latitude,
+                longitude: body.longitude,
+                phoneNumber: body.phoneNumber,
+                orderItems: {                
+                    create: [
+                    ...body.orderItems.map((orderItem:any)=>{
+                        return {
+                        "quantity":orderItem.quantity,
+                        "productId":orderItem.productId,
+                        "unitPrice":orderItem.unitPrice,
+                        }
+                    })
+                    ]
+                }
+                },
+                include: {
+                orderItems: true, 
+                },
         })
         for (const orderItem of body.orderItems) {
             await prisma.product.update({

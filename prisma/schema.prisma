@@ -14,6 +14,7 @@ model Product {
   description   String
   stockQuantity Int
   productPrice  Float
+  image         String
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
   storeId       Int
@@ -29,6 +30,7 @@ model Store {
   storeGewog       String
   storeVillage     String
   merchantId       Int
+  image            String
   merchant         Merchant        @relation(fields: [merchantId], references: [id])
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
@@ -43,16 +45,34 @@ model Merchant {
   password  String
   dzongkhag String
   gewog     String
-  village   String
+  // village   String
+  image     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   stores    Store[]
+}
+
+model Dzongkhags {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Gewog     Gewog[]
+}
+
+model Gewog {
+  id           Int        @id @default(autoincrement())
+  name         String     @unique
+  dzongkhag_id Dzongkhags @relation(fields: [id], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
 }
 
 model Customer {
   id          Int             @id @default(autoincrement())
   name        String
   email       String          @unique
+  image       String
   phoneNumber String
   dzongkhag   String
   gewog       String
@@ -71,6 +91,7 @@ model CustomerOrder {
   orderDate          DateTime    @default(now())
   fulfillmentDate    DateTime
   totalAmount        Float
+  image              String
   orderStatus        OrderStatus
   addressDescription String
   dzongkhag          String
@@ -100,6 +121,7 @@ model Payment {
   order         CustomerOrder @relation(fields: [orderId], references: [id])
   journalNumber String
   amount        Float
+  image         String
   paymentStatus Boolean
   createdAt     DateTime      @default(now())
 }
@@ -114,4 +136,3 @@ enum OrderStatus {
   RETURNED
   REFUND
 }
-

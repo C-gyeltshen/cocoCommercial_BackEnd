@@ -16,8 +16,6 @@ import orderDashbord from './orderDashbord.js'
 import auth from './auth.js'
 import type { Context } from 'hono';
 
-
-
 const app = new Hono()
 
 app.route('/merchant',test)
@@ -54,10 +52,12 @@ app.use('/secure/*', async (c: CustomContext, next) => {
   await next();
 });
 
+
 app.get('/secure/data', (c: CustomContext) => {
   const user = c.user; // Access the user from context
   return c.json({ message: 'Secure data', user });
 });
+
 
 const port = 8080
 console.log(`Server is running on http://localhost:${port}`)

@@ -8,7 +8,6 @@ app.get('/customers', (c) => {
     return c.text('Hello its cocoCommercial')
 })
 
-
 //Create customer 
 app.post('/create/customer', async (c)=>{
     try{
@@ -31,7 +30,8 @@ app.post('/create/customer', async (c)=>{
                 phoneNumber:body.phoneNumber,
                 dzongkhag:body.dzongkhag,
                 gewog:body.gewog,
-                village:body.village
+                village:body.village,
+                image: body.image
             }
             })
         }
