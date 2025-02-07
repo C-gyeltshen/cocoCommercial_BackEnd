@@ -33,7 +33,7 @@ app.post('/create/merchants/stores', async (c) => {
             password: body.password,
             dzongkhag: body.dzongkhag,
             gewog: body.gewog,
-            image: body.image
+            // image: body.image
             }
         });
         // Creating a new store associated with the merchant
@@ -43,9 +43,9 @@ app.post('/create/merchants/stores', async (c) => {
                 storeDescription:body.storeDescription,
                 storeDzongkhag:body.storeDzongkhag,
                 storeGewog:body.storeGewog,
-                storeVillage:body.storeVillage,
+                // storeVillage:body.storeVillage,
                 merchantId:result.id, 
-                image: body.image
+                // image: body.image
             }
         })
         console.log(` A new merchnat ${body.name} is been created with store_id ${stores.id} and merchant_id ${result.id}`)
@@ -79,7 +79,7 @@ app.post('/create/merchants/stores', async (c) => {
                 password: body.password,
                 dzongkhag: body.dzongkhag,
                 gewog: body.gewog,
-                image: body.image
+                // image: body.image
             }
         });
         // Creating a new store associated with the merchant
@@ -89,9 +89,9 @@ app.post('/create/merchants/stores', async (c) => {
                 storeDescription:body.storeDescription,
                 storeDzongkhag:body.storeDzongkhag,
                 storeGewog:body.storeGewog,
-                storeVillage:body.storeVillage,
+                // storeVillage:body.storeVillage,
                 merchantId:result.id, 
-                image: body.image
+                // image: body.image
             }
         })
         console.log(` A new merchnat ${body.name} is been created with store_id ${stores.id} and merchant_id ${result.id}`)

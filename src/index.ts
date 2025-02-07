@@ -14,6 +14,7 @@ import orders from './orders.js'
 import orderStatus from './orderStatus.js'
 import orderDashbord from './orderDashbord.js'
 import auth from './auth.js'
+import masterData from './masterData.js'
 import type { Context } from 'hono';
 
 const app = new Hono()
@@ -26,6 +27,7 @@ app.route('/orders',orders)
 app.route('/orderStatus',orderStatus)
 app.route('/orderDashbord', orderDashbord)
 app.route('/auth', auth)
+app.route('/masterData', masterData)
 
 app.get('/', (c) => {
   return c.text('Hello its cocoCommercial')

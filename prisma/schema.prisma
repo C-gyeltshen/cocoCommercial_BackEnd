@@ -14,12 +14,12 @@ model Product {
   description   String
   stockQuantity Int
   productPrice  Float
-  image         String
+  // image         String
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
   storeId       Int
-  store         Store       @relation(fields: [storeId], references: [id])
   OrderItem     OrderItem[]
+  store         Store       @relation(fields: [storeId], references: [id])
 }
 
 model Store {
@@ -28,14 +28,14 @@ model Store {
   storeDescription String
   storeDzongkhag   String
   storeGewog       String
-  storeVillage     String
+  // storeVillage     String
   merchantId       Int
-  image            String
-  merchant         Merchant        @relation(fields: [merchantId], references: [id])
+  // image            String
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
-  products         Product[]
   customerOrders   CustomerOrder[]
+  products         Product[]
+  merchant         Merchant        @relation(fields: [merchantId], references: [id])
 }
 
 model Merchant {
@@ -45,8 +45,7 @@ model Merchant {
   password  String
   dzongkhag String
   gewog     String
-  // village   String
-  image     String
+  // image     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   stores    Store[]
@@ -57,22 +56,23 @@ model Dzongkhags {
   name      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Gewog     Gewog[]
+  Gewog     Gewogs[]
 }
 
-model Gewog {
+model Gewogs {
   id           Int        @id @default(autoincrement())
-  name         String     @unique
-  dzongkhag_id Dzongkhags @relation(fields: [id], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  name         String
+  dzongkhag_id Int
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now())
+  dzongkhag    Dzongkhags @relation(fields: [dzongkhag_id], references: [id])
 }
 
 model Customer {
   id          Int             @id @default(autoincrement())
   name        String
   email       String          @unique
-  image       String
+  // image       String
   phoneNumber String
   dzongkhag   String
   gewog       String
@@ -85,13 +85,11 @@ model Customer {
 model CustomerOrder {
   id                 Int         @id @default(autoincrement())
   customerId         Int
-  customer           Customer    @relation(fields: [customerId], references: [id])
   storeId            Int
-  store              Store       @relation(fields: [storeId], references: [id])
   orderDate          DateTime    @default(now())
   fulfillmentDate    DateTime
   totalAmount        Float
-  image              String
+  // image              String
   orderStatus        OrderStatus
   addressDescription String
   dzongkhag          String
@@ -100,6 +98,8 @@ model CustomerOrder {
   latitude           Float
   longitude          Float
   phoneNumber        String
+  customer           Customer    @relation(fields: [customerId], references: [id])
+  store              Store       @relation(fields: [storeId], references: [id])
   orderItems         OrderItem[]
   Payment            Payment[]
 }
@@ -118,12 +118,12 @@ model OrderItem {
 model Payment {
   id            Int           @id @default(autoincrement())
   orderId       Int
-  order         CustomerOrder @relation(fields: [orderId], references: [id])
   journalNumber String
   amount        Float
-  image         String
+  // image         String
   paymentStatus Boolean
   createdAt     DateTime      @default(now())
+  order         CustomerOrder @relation(fields: [orderId], references: [id])
 }
 
 enum OrderStatus {

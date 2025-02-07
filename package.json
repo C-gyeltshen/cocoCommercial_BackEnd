@@ -6,14 +6,15 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.13.7",
-    "@prisma/client": "^5.13.0",
+    "@prisma/client": "^6.3.1",
     "@supabase/supabase-js": "^2.47.10",
     "bcrypt": "^5.1.1",
-    "hono": "^4.6.10"
+    "hono": "^4.6.18",
+    "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {
     "@types/node": "^20.17.6",
-    "prisma": "^5.22.0",
+    "prisma": "^6.3.1",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3"
   },
