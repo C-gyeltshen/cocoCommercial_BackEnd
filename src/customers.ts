@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { PrismaClient} from '@prisma/client';
+import { cors } from 'hono/cors';
 const prisma = new PrismaClient()
 
 const app = new Hono()
@@ -7,6 +8,12 @@ const app = new Hono()
 app.get('/customers', (c) => {
     return c.text('Hello its cocoCommercial')
 })
+app.use('*', cors({
+    origin: 'http://localhost:3000', // Allow requests from your frontend
+    allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowHeaders: ['Content-Type', 'Authorization'],
+    credentials: true // Allow cookies if needed
+}))
 
 //Create customer 
 app.post('/create/customer', async (c)=>{
@@ -30,8 +37,9 @@ app.post('/create/customer', async (c)=>{
                 phoneNumber:body.phoneNumber,
                 dzongkhag:body.dzongkhag,
                 gewog:body.gewog,
-                village:body.village,
-                image: body.image
+                password: body.password
+                // village:body.village,
+                // image: body.image
             }
             })
         }
@@ -58,7 +66,7 @@ app.patch('/update/customers/:id', async (c)=>{
             phoneNumber: body.phoneNumber,
             dzongkhag: body.dzongkhag,
             gewog: body.gewog,
-            village: body.village,
+            // village: body.village,
             updatedAt: new Date()
             }
         })
@@ -86,7 +94,7 @@ app.get('/get/customer/:id', async (c)=>{
             email:true,
             dzongkhag:true,
             gewog:true,
-            village:true,
+            // village:true,
             }
         })
         if (!customer_data) {

@@ -65,7 +65,7 @@ app.post('/create/orders/stores/:store_id/customer/:customer_id/orders', async (
                 addressDescription: body.addressDescription,
                 dzongkhag: body.dzongkhag,
                 gewog: body.gewog,
-                image: body.image,
+                // image: body.image,
                 village: body.village,
                 latitude: body.latitude,
                 longitude: body.longitude,

@@ -16,6 +16,7 @@ import orderDashbord from './orderDashbord.js'
 import auth from './auth.js'
 import masterData from './masterData.js'
 import type { Context } from 'hono';
+import { cors } from 'hono/cors';
 
 const app = new Hono()
 
@@ -32,6 +33,14 @@ app.route('/masterData', masterData)
 app.get('/', (c) => {
   return c.text('Hello its cocoCommercial')
 })
+
+app.use('*', cors({
+  origin: 'http://localhost:3000', // Allow requests from your frontend
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowHeaders: ['Content-Type', 'Authorization'],
+  credentials: true // Allow cookies if needed
+}))
+
 
 interface CustomContext extends Context {
   user?: Record<string, any>; // Add properties you want to attach
