@@ -94,7 +94,7 @@ app.get('/get/customer/:id', async (c)=>{
             email:true,
             dzongkhag:true,
             gewog:true,
-            // village:true,
+            // village:true,c
             }
         })
         if (!customer_data) {
